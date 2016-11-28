@@ -10,8 +10,11 @@ all: $(PROG)
 clean:
 	rm -f *~ *.o $(PROG)
 
-client: client.o Reseau.o
-	$(LD) -o client client.o Reseau.o
+client: Client.o Reseau.o
+	$(LD) -o client Client.o Reseau.o
+	
+serveur: Serveur.o
+	$(LD) -o serveur Serveur.o
 
 testPlateau: testPlateau.o Plateau.o GestionJeu.o
 	$(LD) -o testPlateau testPlateau.o Plateau.o GestionJeu.o
@@ -22,8 +25,11 @@ GestionJeu.o: GestionJeu.c GestionJeu.h
 Plateau.o: Plateau.c Plateau.h GestionJeu.h
 	$(CC) Plateau.c
 
-client.o: Client.c Reseau.h
+Client.o: Client.c Reseau.h
 	$(CC) Client.c
 
 Reseau.o: Reseau.c Reseau.h
 	$(CC) Reseau.c
+
+Serveur.o: Serveur.c Serveur.h
+	$(CC) Serveur.c
