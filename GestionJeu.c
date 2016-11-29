@@ -32,6 +32,7 @@ char whichChar(int pos) {
     // Pour faire un essai d'affichage de case non vide :
     if (pos == 44) return ROUGE;
     if (pos == 64) return ROUGE;
+    if (pos == 83) return VERTE;
 
     if (pos <= 56) {
         if ((pos % 14) == 1)
@@ -44,7 +45,7 @@ char whichChar(int pos) {
 
 // Nombre de chevaux restants à l'écurie pour une équipe donnée
 int nbHorsesHome(Team t) {
-    return 2;
+    return 3;
 }
 
 
