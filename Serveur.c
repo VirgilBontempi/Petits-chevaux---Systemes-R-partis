@@ -53,7 +53,10 @@ int main(int argc, char **argv)
         {
             int msgSock;
             msgSock = accept(num, NULL, NULL);
-            write(msgSock, "vous êtes le joueur : " + indice + 1, 23);
+            write(msgSock, "Vous êtes le joueur : " + (indice + 1), 23);
+            /*int joueursRestants;
+            joueursRestants = nbJoueursPartie - nbJoueursConnectes;
+            printf("Un joueur s'est connecté, il reste %d places.", joueursRestants);*/
             nbJoueursConnectes++;
         }
 
@@ -61,7 +64,7 @@ int main(int argc, char **argv)
     while (nbJoueursConnectes < nbJoueursPartie) {
 
     }
-    printf("tous les joueurs ont rejoint la partie");
+    printf("Tous les joueurs ont rejoint la partie");
 
     return 0;
 }

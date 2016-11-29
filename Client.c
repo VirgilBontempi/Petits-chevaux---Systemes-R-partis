@@ -23,9 +23,44 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <ctype.h>
+#include <sys/wait.h>
+#include <sys/socket.h>
+#include "Reseau.h"
+
+#define TAILLE 50
 
 int main(int argc, char **argv)
 {
+	/* ----------------------------
+       Initialisation des variables
+       ----------------------------*/
+	// Paramètres du programme
+	int port;
+    // 
+	int msgSock;
+	char buffer[TAILLE];
+	
+	port = atoi(argv[1]);
+	
+	// Connexion au serveur
+	msgSock = socketClient("localhost", port, TCP);
+	
+	if(msgSock == -1)
+	{ // Gestion d'erreur
+		printf("Aie Aie Aie, des petits lutins ont volé la connexion !\n");
+	}
+	else
+	{
+		int num;
+		
+		write(msgSock, "ping", 4);
+		num = read(msgSock, buffer, TAILLE);
+		buffer[num]='\0';
+		printf("%s\n", buffer);
+	}
 	
 	return 0;
 }
