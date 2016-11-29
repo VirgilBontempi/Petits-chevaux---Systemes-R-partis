@@ -5,30 +5,31 @@
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <stdbool.h>
 #include "Reseau.h"
 #include "Serveur.h"
 
-int main(int argc, char **argv)
-{
-	/* ----------------------------
-       Initialisation des variables
-       ----------------------------*/
-    pid_t id;
+void communicationProcess(int numSocket, int commSock, int nbJoueursPartie, bool* nbJoueursConnectes);
+int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs);
+
+int main(int argc, char **argv) {
+    /* ----------------------------
+     * Initialisation des variables
+     * ----------------------------*/
     // Paramètres du programme
     int port, nbJoueursPartie, nbChevaux;
-    // Nombre de joueurs connectés
-    int nbJoueursConnectes;
 
     int num;
 
     port = atoi(argv[1]);
     nbJoueursPartie = atoi(argv[2]);
     nbChevaux = atoi(argv[3]);
-    
+
     // Tableau de structure des processus, taille = nbJoueursPartie
     char tableauPipe[nbJoueursPartie];
 
-    nbJoueursConnectes = 0;
+    // Nombre de joueurs connectés
+    bool tableauJoueurs[nbJoueursPartie];
 
     num = socketServer(port, TCP);
 
@@ -44,40 +45,70 @@ int main(int argc, char **argv)
     }
 
     /* -----------------
-       Le serveur écoute
-       -----------------*/
+     * Le serveur écoute
+     * -----------------*/
+    printf("La partie est ouverte.\nEn attente de joueurs %d...\n", nbJoueursPartie);
+
     // Tant que tous les joueurs ne sont pas connectés
     int indice;
-    
-    for(indice = 0; indice < nbJoueursPartie; indice++)
-    {
-        id = fork();
-        if (id == 0) // Fils
-        {
-            // Etablissement de la connexion
-            int msgSock;
-            msgSock = accept(num, NULL, NULL);
-            // Actualisation du nombre de joueurs connectés
-            nbJoueursConnectes++;
-            
-            // Message d'information: infos sur joueur
-            char msg[50];
-            sprintf(msg,"Vous êtes le joueur: %d\n", indice+1);
-            write(msgSock, msg, strlen(msg));
-            
-            // Message d'information: places restantes
-            int nbJoueursRestants;
-            nbJoueursRestants = nbJoueursPartie - nbJoueursConnectes;
-            printf("Un joueur s'est connecté, il reste %d place(s).\n", nbJoueursRestants);
-            fflush(stdout);
-            
-        }
+
+    for (indice = 0; indice < nbJoueursPartie; indice++) {
+        communicationProcess(num, indice, nbJoueursPartie, tableauJoueurs);
     }
-    
-    while (nbJoueursConnectes < nbJoueursPartie);
-    
+
+    // Tant que tous les joueurs ne sont pas connectés
+    while (comptePlacesRestantes(tableauJoueurs, nbJoueursPartie) != 0);
+    // Tous les joueurs sont connectés
     printf("Tous les joueurs ont rejoint la partie.\n");
 
     return 0;
 }
 
+/* --------------------------
+ * Processus de communication
+ * --------------------------*/
+void communicationProcess(int numSocket, int commSock, int nbJoueursPartie, bool* tableauJoueurs) {
+    pid_t id;
+    id = fork();
+    
+    if (id == 0) // Fils
+    {
+        // Etablissement de la connexion
+        int msgSock;
+        msgSock = accept(numSocket, NULL, NULL);
+        // Actualisation du nombre de joueurs connectés
+        tableauJoueurs[commSock] = true;
+
+        // Message d'information: infos sur joueur
+        char msg[50];
+        sprintf(msg, "Connexion établie.\nVous êtes le joueur: %d\n", commSock + 1);
+        write(msgSock, msg, strlen(msg));
+
+        // Message d'information: places restantes
+        printf("Un joueur s'est connecté, il reste %d place(s).\n", comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
+        fflush(stdout);
+    } else {
+        // Attend que le fils se termine
+        wait(NULL);
+    }
+}
+
+/* -------------------------------------
+ * Compte les nombre de places restantes
+ * -------------------------------------*/
+int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs) {
+    int index;
+    int nbRestant;
+
+    nbRestant = 0;
+    
+    // Pour chaque joueur du tableau de joueurs
+    for (index = 0; index < nbJoueurs; index++) {
+        // Si le joueur courant n'est pas pret
+        if (tableauJoueurs[index] == false) {
+            // Incrémentation du nombre de places restantes
+            nbRestant++;
+        }
+    }
+    return nbRestant;
+}
