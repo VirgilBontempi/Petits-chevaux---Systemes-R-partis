@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <ctype.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
@@ -15,14 +17,15 @@ int main(int argc, char **argv)
     int port, nbJoueursPartie, nbChevaux;
     // Nombre de joueurs connectés
     int nbJoueursConnectes;
-    // Tableau de structure des processus, taille = nbJoueursPartie
-    char tableauPipe[nbJoueursPartie];
 
     int num;
 
     port = atoi(argv[1]);
     nbJoueursPartie = atoi(argv[2]);
     nbChevaux = atoi(argv[3]);
+    
+    // Tableau de structure des processus, taille = nbJoueursPartie
+    char tableauPipe[nbJoueursPartie];
 
     nbJoueursConnectes = 0;
 
