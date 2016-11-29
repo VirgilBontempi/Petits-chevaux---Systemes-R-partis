@@ -9,9 +9,6 @@
 #include "Reseau.h"
 #include "Serveur.h"
 
-void communicationProcess(int numSocket, int commSock, int nbJoueursPartie, bool* nbJoueursConnectes);
-int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs);
-
 int main(int argc, char **argv) {
     /* ----------------------------
      * Initialisation des variables
@@ -26,18 +23,22 @@ int main(int argc, char **argv) {
     nbChevaux = atoi(argv[3]);
 
     // Tableau de structure des processus, taille = nbJoueursPartie
-    char tableauPipe[nbJoueursPartie];
+    structComCliServ tableauPipe[nbJoueursPartie];
 
     // Nombre de joueurs connectés
     bool tableauJoueurs[nbJoueursPartie];
 
+    //initialisation des pipe Process
+    InitPipe(tableauPipe, nbJoueursPartie);
+
     num = socketServer(port, TCP);
 
+
     // Saisie controlée nb joueurs de la partie
-    if (nbJoueursPartie > 4 || nbJoueursPartie < 2) {
+   /* if (nbJoueursPartie > 4 || nbJoueursPartie < 2) {
         printf("Une partie doit contenir entre 2 et 4 joueurs.\n");
         exit(0);
-    }
+    }*/
     // Saisie controlée nb chevaux de la partie
     if (nbChevaux > 4 || nbChevaux < 2) {
         printf("Un joueur ne peut posséder que 2 à 4 chevaux dans son écurie.\n");
@@ -47,19 +48,54 @@ int main(int argc, char **argv) {
     /* -----------------
      * Le serveur écoute
      * -----------------*/
-    printf("La partie est ouverte.\nEn attente de joueurs %d...\n", nbJoueursPartie);
+    printf("La partie est ouverte.\nEn attente de %d joueur(s)...\n", nbJoueursPartie);
 
     // Tant que tous les joueurs ne sont pas connectés
     int indice;
+    indice = 0;
 
-    for (indice = 0; indice < nbJoueursPartie; indice++) {
-        communicationProcess(num, indice, nbJoueursPartie, tableauJoueurs);
+    while (indice < nbJoueursPartie) {
+
+        pid_t id;
+        id = fork();
+        if (id == 0) // Fils
+        {
+            communicationProcessInit(num, indice, nbJoueursPartie, tableauJoueurs, tableauPipe);
+            printf("%d\n", indice);
+
+        } else {
+            while (tableauJoueurs[indice] == false);
+        }
+        indice++;
+
     }
-
+    printf("OHE\n");
     // Tant que tous les joueurs ne sont pas connectés
     while (comptePlacesRestantes(tableauJoueurs, nbJoueursPartie) != 0);
+
     // Tous les joueurs sont connectés
     printf("Tous les joueurs ont rejoint la partie.\n");
+
+
+
+    for (indice = 0; indice < nbJoueursPartie; indice++) {
+        pid_t id;
+        int taille;
+        char reponse[50];
+        id = fork();
+        if (id == 0) // Fils
+        {
+            ComProcess(tableauPipe, indice);
+            printf("%d\n",indice);
+
+        }
+        close(tableauPipe[indice].pipeIn[0]);
+        close(tableauPipe[indice].pipeOut[1]);
+        write(tableauPipe[indice].pipeIn[1], "entre un truc\n\0", 15);
+        taille = read(tableauPipe[indice].pipeOut[0], reponse, 50);
+        printf("%s\n", reponse);
+        printf("%d\n",indice);
+    }
 
     return 0;
 }
@@ -67,30 +103,26 @@ int main(int argc, char **argv) {
 /* --------------------------
  * Processus de communication
  * --------------------------*/
-void communicationProcess(int numSocket, int commSock, int nbJoueursPartie, bool* tableauJoueurs) {
-    pid_t id;
-    id = fork();
-    
-    if (id == 0) // Fils
-    {
-        // Etablissement de la connexion
-        int msgSock;
-        msgSock = accept(numSocket, NULL, NULL);
-        // Actualisation du nombre de joueurs connectés
-        tableauJoueurs[commSock] = true;
+void communicationProcessInit(int numSocket, int commSock, int nbJoueursPartie, bool* tableauJoueurs, structComCliServ* tab) {
 
-        // Message d'information: infos sur joueur
-        char msg[50];
-        sprintf(msg, "Connexion établie.\nVous êtes le joueur: %d\n", commSock + 1);
-        write(msgSock, msg, strlen(msg));
+    // Etablissement de la connexion
+    int msgSock;
+    msgSock = accept(numSocket, NULL, NULL);
+    // Actualisation du nombre de joueurs connectés
+    tableauJoueurs[commSock] = true;
+    tab->numSock = msgSock;
 
-        // Message d'information: places restantes
-        printf("Un joueur s'est connecté, il reste %d place(s).\n", comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
-        fflush(stdout);
-    } else {
-        // Attend que le fils se termine
-        wait(NULL);
-    }
+    // Message d'information: infos sur joueur
+    char msg[50];
+    sprintf(msg, "Connexion établie.\nVous êtes le joueur: %d\n", commSock + 1);
+    write(msgSock, msg, strlen(msg));
+
+    // Message d'information: places restantes
+    printf("Un joueur s'est connecté, il reste %d place(s).\n", comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
+    fflush(stdout);
+
+
+
 }
 
 /* -------------------------------------
@@ -101,7 +133,7 @@ int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs) {
     int nbRestant;
 
     nbRestant = 0;
-    
+
     // Pour chaque joueur du tableau de joueurs
     for (index = 0; index < nbJoueurs; index++) {
         // Si le joueur courant n'est pas pret
@@ -111,4 +143,28 @@ int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs) {
         }
     }
     return nbRestant;
+}
+
+void InitPipe(structComCliServ* tableauPipe, int nbJoueurs) {
+    int indice;
+    for (indice = 0; indice < nbJoueurs; indice++) {
+
+        pipe(tableauPipe[indice].pipeIn);
+        pipe(tableauPipe[indice].pipeOut);
+
+    }
+}
+
+void ComProcess(structComCliServ* tab, int indice) {
+    char msg[TAILLE_MAX];
+    int taille;
+
+    close(tab[indice].pipeIn[1]);
+    close(tab[indice].pipeOut[0]);
+    printf("a\n");
+    taille = read(tab[indice].pipeIn[0], msg, TAILLE_MAX);
+    printf("b\n");
+    write(tab[indice].numSock, msg, taille+1);
+    taille = read(tab[indice].numSock, msg, TAILLE_MAX);
+    write(tab[indice].pipeOut[1], msg, taille);
 }
