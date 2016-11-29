@@ -1,1 +1,1 @@
-# Petits-chevaux---Systemes-R-partis
+# Petits-chevaux---Systemes-Répartis
