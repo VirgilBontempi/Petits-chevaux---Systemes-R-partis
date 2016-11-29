@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
+#include <string.h>
 #include "Reseau.h"
 #include "Serveur.h"
 
@@ -33,38 +34,49 @@ int main(int argc, char **argv)
 
     // Saisie controlée nb joueurs de la partie
     if (nbJoueursPartie > 4 || nbJoueursPartie < 2) {
-        printf("Une partie doit contenir entre 2 et 4 joueurs.");
+        printf("Une partie doit contenir entre 2 et 4 joueurs.\n");
         exit(0);
     }
     // Saisie controlée nb chevaux de la partie
     if (nbChevaux > 4 || nbChevaux < 2) {
-        printf("Un joueur ne peut posséder que 2 à 4 chevaux dans son écurie.");
+        printf("Un joueur ne peut posséder que 2 à 4 chevaux dans son écurie.\n");
         exit(0);
     }
 
     /* -----------------
        Le serveur écoute
        -----------------*/
-    int indice;
     // Tant que tous les joueurs ne sont pas connectés
-    for (indice = 0; indice < nbJoueursPartie; indice++) {
+    int indice;
+    
+    for(indice = 0; indice < nbJoueursPartie; indice++)
+    {
         id = fork();
         if (id == 0) // Fils
         {
+            // Etablissement de la connexion
             int msgSock;
             msgSock = accept(num, NULL, NULL);
-            write(msgSock, "Vous êtes le joueur : " + (indice + 1), 23);
-            /*int joueursRestants;
-            joueursRestants = nbJoueursPartie - nbJoueursConnectes;
-            printf("Un joueur s'est connecté, il reste %d places.", joueursRestants);*/
+            // Actualisation du nombre de joueurs connectés
             nbJoueursConnectes++;
+            
+            // Message d'information: infos sur joueur
+            char msg[50];
+            sprintf(msg,"Vous êtes le joueur: %d\n", indice+1);
+            write(msgSock, msg, strlen(msg));
+            
+            // Message d'information: places restantes
+            int nbJoueursRestants;
+            nbJoueursRestants = nbJoueursPartie - nbJoueursConnectes;
+            printf("Un joueur s'est connecté, il reste %d place(s).\n", nbJoueursRestants);
+            fflush(stdout);
+            
         }
-
     }
-    while (nbJoueursConnectes < nbJoueursPartie) {
-
-    }
-    printf("Tous les joueurs ont rejoint la partie");
+    
+    while (nbJoueursConnectes < nbJoueursPartie);
+    
+    printf("Tous les joueurs ont rejoint la partie.\n");
 
     return 0;
 }
