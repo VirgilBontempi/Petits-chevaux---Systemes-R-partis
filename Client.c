@@ -66,6 +66,14 @@ int main(int argc, char **argv) {
         if (strcmp(buffer, "Que la partie commence !\n") == 0) {
             printf("%s\n", buffer);
             affichePlateau(5, 24);
+
+            // Pour l'exemple, si on a besoin de parcourir la liste des équipes ?
+            Team t;
+            printf("Plateau de Jeu :\n");
+            // N'affiche rien car 'R' > 'B'
+            for (t = ROUGE; t <= BLEUE; t++) {
+                printf("\t%s\n", toString(t));
+            }
         }
 
     }
