@@ -1,0 +1,77 @@
+gcc --std=c99 -Wall -g -c    -c -o testPlateau.o testPlateau.c
+gcc --std=c99 -Wall -g -c Plateau.c
+Plateau.c: In function ‘ligneHorizontale’:
+Plateau.c:90:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(OPEN);
+     ^
+Plateau.c:95:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(CLOSE);
+     ^
+Plateau.c: In function ‘ligneVerticale’:
+Plateau.c:99:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(OPEN);
+     ^
+Plateau.c:105:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(CLOSE);
+     ^
+Plateau.c: In function ‘afficheCadre’:
+Plateau.c:110:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(HAUTGAUCHE);
+     ^
+Plateau.c:112:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(HAUTDROIT);
+     ^
+Plateau.c:115:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(BASDROIT);
+     ^
+Plateau.c:118:5: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(BASGAUCHE);
+     ^
+gcc --std=c99 -Wall -g -c GestionJeu.c
+gcc -o testPlateau testPlateau.o Plateau.o GestionJeu.o
+gcc --std=c99 -Wall -g -c Client.c
+gcc --std=c99 -Wall -g -c Reseau.c
+gcc -o client Client.o Reseau.o
+gcc --std=c99 -Wall -g -c Serveur.c 
+Serveur.c: In function ‘main’:
+Serveur.c:26:5: error: unknown type name ‘structComCliServ’
+     structComCliServ tableauPipe[nbJoueursPartie];
+     ^
+Serveur.c:32:5: warning: implicit declaration of function ‘InitPipe’ [-Wimplicit-function-declaration]
+     InitPipe(tableauPipe, nbJoueursPartie);
+     ^
+Serveur.c:63:13: warning: implicit declaration of function ‘communicationProcessInit’ [-Wimplicit-function-declaration]
+             communicationProcessInit(num, indice, nbJoueursPartie, tableauJoueurs, tableauPipe);
+             ^
+Serveur.c:74:5: warning: implicit declaration of function ‘comptePlacesRestantes’ [-Wimplicit-function-declaration]
+     while (comptePlacesRestantes(tableauJoueurs, nbJoueursPartie) != 0);
+     ^
+Serveur.c:88:13: warning: implicit declaration of function ‘ComProcess’ [-Wimplicit-function-declaration]
+             ComProcess(tableauPipe, indice);
+             ^
+Serveur.c:91:34: error: request for member ‘pipeIn’ in something not a structure or union
+         close(tableauPipe[indice].pipeIn[0]);
+                                  ^
+Serveur.c:92:34: error: request for member ‘pipeOut’ in something not a structure or union
+         close(tableauPipe[indice].pipeOut[1]);
+                                  ^
+Serveur.c:93:34: error: request for member ‘pipeIn’ in something not a structure or union
+         write(tableauPipe[indice].pipeIn[1], "entre un truc\n\0", 15);
+                                  ^
+Serveur.c:94:42: error: request for member ‘pipeOut’ in something not a structure or union
+         taille = read(tableauPipe[indice].pipeOut[0], reponse, 50);
+                                          ^
+Serveur.c:83:13: warning: variable ‘taille’ set but not used [-Wunused-but-set-variable]
+         int taille;
+             ^
+Serveur.c: At top level:
+Serveur.c:104:100: error: unknown type name ‘structComCliServ’
+ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, bool* tableauJoueurs, structComCliServ* tab) {
+                                                                                                    ^
+Serveur.c:146:15: error: unknown type name ‘structComCliServ’
+ void InitPipe(structComCliServ* tableauPipe, int nbJoueurs) {
+               ^
+Serveur.c:156:17: error: unknown type name ‘structComCliServ’
+ void ComProcess(structComCliServ* tab, int indice) {
+                 ^
+make: *** [Serveur.o] Erreur 1

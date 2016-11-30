@@ -26,50 +26,50 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include "Reseau.h"
+#include "Plateau.h"
+#include "GestionJeu.h"
 
 #define TAILLE 50
 
-int main(int argc, char **argv)
-{
-	/* ----------------------------
-       Initialisation des variables
-       ----------------------------*/
-	// Paramètres du programme
-	int port;
+int main(int argc, char **argv) {
+    /* ----------------------------
+   Initialisation des variables
+   ----------------------------*/
+    // Paramètres du programme
+    int port;
     // 
-	int msgSock;
-	char buffer[TAILLE];
-	
-	port = atoi(argv[1]);
-	
-	// Connexion au serveur
-	msgSock = socketClient("localhost", port, TCP);
-	
-	if(msgSock == -1)
-	{ // Gestion d'erreur
-		printf("Aie Aie Aie, des petits lutins ont volé la connexion !\n");
-	}
-	else
-	{
-		int num;
-		
-		//write(msgSock, "ping", 4);
-		num = read(msgSock, buffer, TAILLE);
-		buffer[num]='\0';
-		printf("%s\n", buffer);
-                //com client serv
-                num=read(msgSock,buffer,TAILLE);
-                printf("%d\n",num);
-                buffer[num]='\0';
-                //printf("%s\n",buffer);
-                write(msgSock,"un trac",7);
-                
-                
-	}
-	
-	return 0;
+    int msgSock;
+    char buffer[TAILLE];
+
+    port = atoi(argv[1]);
+
+    // Connexion au serveur
+    msgSock = socketClient("localhost", port, TCP);
+
+    if (msgSock == -1) { // Gestion d'erreur
+        printf("Aie Aie Aie, des petits lutins ont volé la connexion !\n");
+    } else {
+        int num;
+
+        num = read(msgSock, buffer, TAILLE);
+        buffer[num] = '\0';
+        printf("%s\n", buffer);
+        //com client serv
+        num = read(msgSock, buffer, TAILLE);
+        printf("%d\n", num);
+        buffer[num] = '\0';
+
+        if (strcmp(buffer, "Que la partie commence !\n") == 0) {
+            printf("%s\n", buffer);
+            affichePlateau(5, 24);
+        }
+
+    }
+
+    return 0;
 }
 

@@ -10,8 +10,8 @@ all: $(PROG)
 clean:
 	rm -f *~ *.o $(PROG)
 
-client: Client.o Reseau.o
-	$(LD) -o client Client.o Reseau.o
+client: Client.o Reseau.o Plateau.o GestionJeu.o
+	$(LD) -o client Client.o Reseau.o Plateau.o GestionJeu.o
 	
 serveur: Serveur.o Reseau.h Serveur.h 
 	$(LD) -o serveur Serveur.o Reseau.o
