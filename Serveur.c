@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
             communicationProcessInit(num, indice, nbJoueursPartie, tableauJoueurs, tableauPipe);
 
         } else {
-            while (tableauJoueurs[indice] == false);
+            wait(NULL);
         }
         indice++;
 
@@ -89,7 +89,6 @@ int main(int argc, char **argv) {
             close(tableauPipe[ind].pipeIn[0]);
             close(tableauPipe[ind].pipeOut[1]);
             write(tableauPipe[ind].pipeIn[1], "entre un truc", 13);
-            printf("la\n");
             taille = read(tableauPipe[ind].pipeOut[0], reponse, 50);
             reponse[taille] = '\0';
             printf("%s\n", reponse);
@@ -130,16 +129,16 @@ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, boo
 void attribueCouleur(int index, structComCliServ* tab) {
     switch (index) {
         case 0:
-            sprintf(tab[index].couleur,"%s","ROUGE");
+            sprintf(tab[index].couleur, "%s", "ROUGE");
             break;
         case 1:
-            sprintf(tab[index].couleur,"%s","JAUNE");
+            sprintf(tab[index].couleur, "%s", "JAUNE");
             break;
         case 2:
-            sprintf(tab[index].couleur,"%s","VERT");
+            sprintf(tab[index].couleur, "%s", "VERT");
             break;
         case 3:
-            sprintf(tab[index].couleur,"%s","BLEU");
+            sprintf(tab[index].couleur, "%s", "BLEU");
             break;
     }
 }
