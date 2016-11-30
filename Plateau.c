@@ -50,7 +50,7 @@ static void red(void) { printf("%s1;31m", CSI); }
 static void green(void) { printf("%s1;32m", CSI); }
 static void yellow(void) { printf("%s1;33m", CSI); }
 static void blue(void) { printf("%s1;34m", CSI); }
-static void magenta(void) { printf("%s1;35m", CSI); }
+//static void magenta(void) { printf("%s1;35m", CSI); }
 static void cyan(void) { printf("%s1;36m", CSI); }
 // static void white(void) { printf("%s1;37m", CSI); }
 static void normal(void) { printf("%s0m", CSI); }
@@ -62,7 +62,7 @@ static char whichCharHorse(Team t) {
     char res;
     switch (t) {
         case ROUGE: res = 'R'; break;
-        case JAUNE: res = 'M'; break;
+        case JAUNE: res = 'J'; break;
         case VERTE: res = 'V'; break;
         case BLEUE: res = 'B'; break;
     }
@@ -142,7 +142,7 @@ static void afficheContenuPlateau(int originRow, int originColumn) {
     for (i = 0; i < 6; i++) { putchar(' '); putColoredChar(whichChar(pos++)); }
     down(1); left(1); putColoredChar(whichChar(pos++)); left(1); down(1);
 
-    magenta(); defaultColor = magenta;
+    yellow(); defaultColor = yellow;
     for (i = 0; i < 6; i++) { putColoredChar(whichChar(pos++)); left(3); }
     for (i = 0; i < 7; i++) { putColoredChar(whichChar(pos++)); left(1); down(1); }
     up(1); left(2); putColoredChar(whichChar(pos++)); left(3);
@@ -165,7 +165,7 @@ static void afficheContenuPlateau(int originRow, int originColumn) {
     for (i = 0; i < 6; i++) { putCharStairs(pos++); left(1); down(1); }
     
     right(12);
-    magenta(); pos = 71;
+    yellow(); pos = 71;
     for (i = 0; i < 6; i++) { putCharStairs(pos++); left(3); }
     
     down(6);
