@@ -10,9 +10,7 @@
 #include "Serveur.h"
 
 int main(int argc, char **argv) {
-    /* ----------------------------
-     * Initialisation des variables
-     * ----------------------------*/
+    // Initialisation des variables
     // Paramètres du programme
     int port, nbJoueursPartie, nbChevaux;
     int indice, ind;
@@ -45,63 +43,59 @@ int main(int argc, char **argv) {
         exit(0);
     }
 
-    /* -----------------
-     * Le serveur écoute
-     * -----------------*/
+    // Le serveur écoute
     printf("La partie est ouverte.\nEn attente de %d joueur(s)...\n", nbJoueursPartie);
 
     // Tant que tous les joueurs ne sont pas connectés
-
     indice = 0;
-
     while (indice < nbJoueursPartie) {
-
         pid_t id;
         id = fork();
         if (id == 0) // Fils
         {
+            // Etabli la connexion entre le serveur et un client
             communicationProcessInit(num, indice, nbJoueursPartie, tableauJoueurs, tableauPipe);
-
-        } else {
+        } else { // Père
+            // Le père attends la fin de l'execution du fils
             wait(NULL);
         }
+
+        // Un client vient de se connecter
         indice++;
 
     }
-    printf("OHE\n");
+
     // Tant que tous les joueurs ne sont pas connectés
     while (comptePlacesRestantes(tableauJoueurs, nbJoueursPartie) != 0);
 
     // Tous les joueurs sont connectés
     printf("Tous les joueurs ont rejoint la partie.\n");
 
+    // Pour chaque joueur
     for (ind = 0; ind < nbJoueursPartie; ind++) {
+        // Variable
         pid_t id;
-        int taille;
-        char reponse[50];
+
         id = fork();
         if (id == 0) // Fils
         {
             ComProcess(tableauPipe, ind);
             exit(0);
 
-        } else {
+        } else { // Père
+            // Fermeture des parties des tubes que l'on utilise pas
             close(tableauPipe[ind].pipeIn[0]);
             close(tableauPipe[ind].pipeOut[1]);
-            write(tableauPipe[ind].pipeIn[1], "entre un truc", 13);
-            taille = read(tableauPipe[ind].pipeOut[0], reponse, 50);
-            reponse[taille] = '\0';
-            printf("%s\n", reponse);
-
+            // Ecriture du message de lancement de partie
+            write(tableauPipe[ind].pipeIn[1], "Que la partie commence !\n", 25);
         }
     }
-
     return 0;
 }
 
-/* --------------------------
- * Processus de communication
- * --------------------------*/
+/* ---------------------------------------
+ * Créarion des processus de communication
+ * ---------------------------------------*/
 void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, bool* tableauJoueurs, structComCliServ* tab) {
 
     // Etablissement de la connexion
@@ -114,30 +108,32 @@ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, boo
     // Message d'information: infos sur joueur
     char msg[50];
     attribueCouleur(index, tab);
-    printf("%s\n", tab[index].couleur);
     sprintf(msg, "Connexion établie.\nVous êtes le joueur: %s\n", tab[index].couleur);
     write(msgSock, msg, strlen(msg));
 
     // Message d'information: places restantes
-    printf("Un joueur s'est connecté, il reste %d place(s).\n", comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
+    printf("Le joueur %s s'est connecté, il reste %d place(s).\n", tab[index].couleur, comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
     fflush(stdout);
 
 
 
 }
 
+/* -------------------------------------
+ * Attribution d'une couleur à un joueur
+ * -------------------------------------*/
 void attribueCouleur(int index, structComCliServ* tab) {
     switch (index) {
-        case 0:
+        case 0: // Permier client connecté
             sprintf(tab[index].couleur, "%s", "ROUGE");
             break;
-        case 1:
+        case 1: // Deuxième client connecté
             sprintf(tab[index].couleur, "%s", "JAUNE");
             break;
-        case 2:
+        case 2: // Troisième client connecté
             sprintf(tab[index].couleur, "%s", "VERT");
             break;
-        case 3:
+        case 3: // Quatrième client connecté
             sprintf(tab[index].couleur, "%s", "BLEU");
             break;
     }
@@ -147,6 +143,7 @@ void attribueCouleur(int index, structComCliServ* tab) {
  * Compte les nombre de places restantes
  * -------------------------------------*/
 int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs) {
+    // Variables
     int index;
     int nbRestant;
 
@@ -163,29 +160,45 @@ int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs) {
     return nbRestant;
 }
 
+/* --------------------
+ * Initialise les pipes
+ * --------------------*/
 void InitPipe(structComCliServ* tableauPipe, int nbJoueurs) {
+    // Variables
     int indice;
-    for (indice = 0; indice < nbJoueurs; indice++) {
 
+    // Pour chaque joueur
+    for (indice = 0; indice < nbJoueurs; indice++) {
+        // Initialisation
         pipe(tableauPipe[indice].pipeIn);
         pipe(tableauPipe[indice].pipeOut);
 
     }
 }
 
+/* ------------------------
+ * Process de communication
+ * ------------------------*/
 void ComProcess(structComCliServ* tab, int indice) {
+    // Variables
     char msgRequest[TAILLE_MAX];
     char msgReply[TAILLE_MAX];
     int taille;
 
+    // Fermeture des parties des tubes que l'on utilise pas
     close(tab[indice].pipeIn[1]);
     close(tab[indice].pipeOut[0]);
+    
+    // Lecture de
     taille = read(tab[indice].pipeIn[0], msgRequest, TAILLE_MAX);
     msgRequest[taille] = '\0';
     printf("comm : taille alle :%d\n", taille);
+    // Ecriture de
     write(tab[indice].numSock, msgRequest, taille + 1);
+    // Lecture de
     taille = read(tab[indice].numSock, msgReply, TAILLE_MAX);
     msgReply[taille] = '\0';
     printf("comm : taille retour :%d\n", taille);
+    // Ecriture de
     write(tab[indice].pipeOut[1], msgReply, taille + 1);
 }
