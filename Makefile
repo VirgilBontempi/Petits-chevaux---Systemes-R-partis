@@ -4,7 +4,7 @@
 CC = gcc --std=c99 -Wall -g -c
 LD = gcc
 
-PROG=testPlateau client serveur
+PROG=testPlateau client serveur clientFermeTest
 all: $(PROG)
 
 clean:
@@ -33,3 +33,12 @@ Reseau.o: Reseau.c Reseau.h
 
 Serveur.o: Serveur.c Serveur.h 
 	$(CC) Serveur.c 
+	
+	
+
+clientFermeTest: ClientFermeTest.o Reseau.o Plateau.o GestionJeu.o
+	$(LD) -o clientFermeTest ClientFermeTest.o Reseau.o Plateau.o GestionJeu.o
+	
+
+ClientFermeTest.o: ClientFermeTest.c Reseau.h
+	$(CC) ClientFermeTest.c

@@ -1,23 +1,7 @@
 #include <stdbool.h>
 
-#define TAILLE_COULEUR 6
+
 #define TAILLE_MAX 100
-
-typedef struct {
-    bool estArrive, estDansEnclos, estDansEscalier, estDansParcours;
-    int position;
-} cheval;
-
-typedef struct {
-    char couleur[TAILLE_COULEUR];
-    cheval* ptChevaux;
-} joueur;
-
-typedef struct {
-    int pipeIn[2], pipeOut[2];
-    int numSock;
-    joueur ptJoueur;
-} structComCliServ;
 
 
 

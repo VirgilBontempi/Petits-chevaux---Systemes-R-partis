@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "Reseau.h"
+#include "Structure.h"
 #include "Serveur.h"
 
 int main(int argc, char **argv) {
