@@ -56,10 +56,18 @@ int main(int argc, char **argv)
 	{
 		int num;
 		
-		write(msgSock, "ping", 4);
+		//write(msgSock, "ping", 4);
 		num = read(msgSock, buffer, TAILLE);
 		buffer[num]='\0';
 		printf("%s\n", buffer);
+                //com client serv
+                num=read(msgSock,buffer,TAILLE);
+                printf("%d\n",num);
+                buffer[num]='\0';
+                //printf("%s\n",buffer);
+                write(msgSock,"un trac",7);
+                
+                
 	}
 	
 	return 0;

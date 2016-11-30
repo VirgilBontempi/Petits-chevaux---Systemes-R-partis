@@ -90,9 +90,13 @@ int main(int argc, char **argv) {
         }
         close(tableauPipe[indice].pipeIn[0]);
         close(tableauPipe[indice].pipeOut[1]);
-        write(tableauPipe[indice].pipeIn[1], "entre un truc\n\0", 15);
+        write(tableauPipe[indice].pipeIn[1], "entre un truc", 13);
         taille = read(tableauPipe[indice].pipeOut[0], reponse, 50);
+        reponse[taille] = '\0';
         printf("%s\n", reponse);
+
+
+        wait(NULL);
     }
 
     return 0;
@@ -154,13 +158,18 @@ void InitPipe(structComCliServ* tableauPipe, int nbJoueurs) {
 }
 
 void ComProcess(structComCliServ* tab, int indice) {
-    char msg[TAILLE_MAX];
+    char msgRequest[TAILLE_MAX];
+    char msgReply[TAILLE_MAX];
     int taille;
 
     close(tab[indice].pipeIn[1]);
     close(tab[indice].pipeOut[0]);
-    taille = read(tab[indice].pipeIn[0], msg, TAILLE_MAX);
-    write(tab[indice].numSock, msg, taille+1);
-    taille = read(tab[indice].numSock, msg, TAILLE_MAX);
-    write(tab[indice].pipeOut[1], msg, taille);
+    taille = read(tab[indice].pipeIn[0], msgRequest, TAILLE_MAX);
+    msgRequest[taille] = '\0';
+    printf("comm : taille alle :%d\n", taille);
+    write(tab[indice].numSock, msgRequest, taille + 1);
+    taille = read(tab[indice].numSock, msgReply, TAILLE_MAX);
+    msgReply[taille] = '\0';
+    printf("comm : taille retour :%d\n", taille);
+    write(tab[indice].pipeOut[1], msgReply, taille + 1);
 }
