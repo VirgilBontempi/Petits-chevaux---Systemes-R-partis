@@ -14,4 +14,4 @@ void communicationProcessInit(int numSocket, int commSock, int nbJoueursPartie, 
 int comptePlacesRestantes(bool* tableauJoueurs, int nbJoueurs);
 void InitPipe(structComCliServ* tableauPipe, int nbJoueurs);
 void ComProcess(structComCliServ* tab, int indice);
-void attribueCouleur(int index, char* tab);
+void attribueCouleur(int index, structComCliServ* tab);

@@ -75,8 +75,6 @@ int main(int argc, char **argv) {
     // Tous les joueurs sont connectés
     printf("Tous les joueurs ont rejoint la partie.\n");
 
-    int i=0;
-
     for (ind = 0; ind < nbJoueursPartie; ind++) {
         pid_t id;
         int taille;
@@ -95,10 +93,10 @@ int main(int argc, char **argv) {
             taille = read(tableauPipe[ind].pipeOut[0], reponse, 50);
             reponse[taille] = '\0';
             printf("%s\n", reponse);
-            
+
         }
     }
-    
+
     return 0;
 }
 
@@ -116,7 +114,9 @@ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, boo
 
     // Message d'information: infos sur joueur
     char msg[50];
-    sprintf(msg, "Connexion établie.\nVous êtes le joueur: %d\n", index + 1);
+    attribueCouleur(index, tab);
+    printf("%s\n", tab[index].couleur);
+    sprintf(msg, "Connexion établie.\nVous êtes le joueur: %s\n", tab[index].couleur);
     write(msgSock, msg, strlen(msg));
 
     // Message d'information: places restantes
@@ -125,6 +125,23 @@ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, boo
 
 
 
+}
+
+void attribueCouleur(int index, structComCliServ* tab) {
+    switch (index) {
+        case 0:
+            sprintf(tab[index].couleur,"%s","ROUGE");
+            break;
+        case 1:
+            sprintf(tab[index].couleur,"%s","JAUNE");
+            break;
+        case 2:
+            sprintf(tab[index].couleur,"%s","VERT");
+            break;
+        case 3:
+            sprintf(tab[index].couleur,"%s","BLEU");
+            break;
+    }
 }
 
 /* -------------------------------------
