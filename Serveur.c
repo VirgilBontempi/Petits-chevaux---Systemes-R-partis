@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
      * ----------------------------*/
     // Paramètres du programme
     int port, nbJoueursPartie, nbChevaux;
-
+    int indice, ind;
     int num;
 
     port = atoi(argv[1]);
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
     printf("La partie est ouverte.\nEn attente de %d joueur(s)...\n", nbJoueursPartie);
 
     // Tant que tous les joueurs ne sont pas connectés
-    int indice;
+
     indice = 0;
 
     while (indice < nbJoueursPartie) {
@@ -61,7 +61,6 @@ int main(int argc, char **argv) {
         if (id == 0) // Fils
         {
             communicationProcessInit(num, indice, nbJoueursPartie, tableauJoueurs, tableauPipe);
-            printf("%d\n", indice);
 
         } else {
             while (tableauJoueurs[indice] == false);
@@ -76,29 +75,30 @@ int main(int argc, char **argv) {
     // Tous les joueurs sont connectés
     printf("Tous les joueurs ont rejoint la partie.\n");
 
+    int i=0;
 
-
-    for (indice = 0; indice < nbJoueursPartie; indice++) {
+    for (ind = 0; ind < nbJoueursPartie; ind++) {
         pid_t id;
         int taille;
         char reponse[50];
         id = fork();
         if (id == 0) // Fils
         {
-            ComProcess(tableauPipe, indice);
+            ComProcess(tableauPipe, ind);
+            exit(0);
 
+        } else {
+            close(tableauPipe[ind].pipeIn[0]);
+            close(tableauPipe[ind].pipeOut[1]);
+            write(tableauPipe[ind].pipeIn[1], "entre un truc", 13);
+            printf("la\n");
+            taille = read(tableauPipe[ind].pipeOut[0], reponse, 50);
+            reponse[taille] = '\0';
+            printf("%s\n", reponse);
+            
         }
-        close(tableauPipe[indice].pipeIn[0]);
-        close(tableauPipe[indice].pipeOut[1]);
-        write(tableauPipe[indice].pipeIn[1], "entre un truc", 13);
-        taille = read(tableauPipe[indice].pipeOut[0], reponse, 50);
-        reponse[taille] = '\0';
-        printf("%s\n", reponse);
-
-
-        wait(NULL);
     }
-
+    
     return 0;
 }
 
