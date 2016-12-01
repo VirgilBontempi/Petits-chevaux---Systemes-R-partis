@@ -238,7 +238,9 @@ void InitJoueur(structComCliServ* tableau, int nbJoueurs, int nbChevaux) {
  * ------------------------*/
 void ComProcess(structComCliServ* tab, int indice) {
     // Variables
-    char msgRequest[TAILLE_MAX];
+    char msgRequestServ[TAILLE_MAX];
+    char msgRequestCli[TAILLE_MAX];
+
     //    char msgReply[TAILLE_MAX];
     int taille;
 
@@ -247,23 +249,22 @@ void ComProcess(structComCliServ* tab, int indice) {
     close(tab[indice].pipeOut[0]);
 
     // Lecture dans le tube
-    taille = read(tab[indice].pipeIn[0], msgRequest, TAILLE_MAX);
-    msgRequest[taille] = '\0';
+    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
+    sprintf(msgRequestCli, "%s", msgRequestServ);
     // Ecriture dans la socket (nbChevaux)
-    write(tab[indice].numSock, msgRequest, taille+1);
-
+    write(tab[indice].numSock, msgRequestCli, taille);
 
     // Lecture dans le tube
-    taille = read(tab[indice].pipeIn[0], msgRequest, TAILLE_MAX);
-    msgRequest[taille] = '\0';
+    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
+    sprintf(msgRequestCli, "%s", msgRequestServ);
     // Ecriture dans la socket (Que la partie commence !)
- //   printf("Envoi 3 %s\n", msgRequest);
-    write(tab[indice].numSock, msgRequest, taille+1);
-
+    write(tab[indice].numSock, msgRequestCli, taille);
+    
     // Lecture dans le tube
-    taille = read(tab[indice].pipeIn[0], msgRequest, TAILLE_MAX);
+    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
+    sprintf(msgRequestCli, "%s", msgRequestServ);
     // Ecriture dans la socket (Plateau à l'état d'origine)
-    write(tab[indice].numSock, msgRequest, taille);
+    write(tab[indice].numSock, msgRequestCli, taille);
 
 
 
