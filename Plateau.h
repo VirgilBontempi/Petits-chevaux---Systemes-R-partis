@@ -12,6 +12,8 @@
 #define PUBLIC
 #endif
 
+
+
 // Les origines permettent de décaler un peu le plateau dans la fenêtre
 PUBLIC void affichePlateau(int originRow, int originColumn);
 

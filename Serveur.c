@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "Reseau.h"
-#include "Structure.h"
+#include "GestionJeu.h"
 #include "Serveur.h"
 
 int main(int argc, char **argv) {
@@ -109,11 +109,11 @@ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, boo
     // Message d'information: infos sur joueur
     char msg[50];
     attribueCouleur(index, tab);
-    sprintf(msg, "Connexion établie.\nVous êtes le joueur: %s\n", tab[index].ptJoueur.couleur);
+    sprintf(msg, "Connexion établie.\nVous êtes le joueur: %s\n", toString(tab[index].ptJoueur.couleur));
     write(msgSock, msg, strlen(msg));
 
     // Message d'information: places restantes
-    printf("Le joueur %s s'est connecté, il reste %d place(s).\n", tab[index].ptJoueur.couleur, comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
+    printf("Le joueur %s s'est connecté, il reste %d place(s).\n", toString(tab[index].ptJoueur.couleur), comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
     fflush(stdout);
 
 
@@ -126,16 +126,16 @@ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, boo
 void attribueCouleur(int index, structComCliServ* tab) {
     switch (index) {
         case 0: // Permier client connecté
-            sprintf(tab[index].ptJoueur.couleur, "%s", "ROUGE");
+            tab[index].ptJoueur.couleur = ROUGE;
             break;
         case 1: // Deuxième client connecté
-            sprintf(tab[index].ptJoueur.couleur, "%s", "JAUNE");
+            tab[index].ptJoueur.couleur = JAUNE;
             break;
         case 2: // Troisième client connecté
-            sprintf(tab[index].ptJoueur.couleur, "%s", "VERT");
+            tab[index].ptJoueur.couleur = VERTE;
             break;
         case 3: // Quatrième client connecté
-            sprintf(tab[index].ptJoueur.couleur, "%s", "BLEU");
+            tab[index].ptJoueur.couleur = BLEUE;
             break;
     }
 }

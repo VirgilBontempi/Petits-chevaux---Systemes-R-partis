@@ -6,13 +6,12 @@
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include "Reseau.h"
-#include "Structure.h"
 #include "Plateau.h"
 #include "GestionJeu.h"
 
 #define TAILLE 50
 
-void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbJoueurs, int nbChevaux);
+void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbChevaux);
 
 int main(int argc, char **argv) {
     /* ----------------------------
@@ -22,16 +21,13 @@ int main(int argc, char **argv) {
     //    int port;
     // 
     // int msgSock;
-    // char buffer[TAILLE];
-    int nbJoueurs, nbChevaux;
+    char buffer[TAILLE];
+    int nbChevaux;
 
-    int index;
-
-    // int num;
+    int index, indice;
 
     char* ptTableau[3];
 
-    nbJoueurs = 3;
     nbChevaux = 3;
 
 
@@ -41,9 +37,9 @@ int main(int argc, char **argv) {
     ptTableau[1] = malloc(100 * sizeof (char));
     ptTableau[2] = malloc(100 * sizeof (char));
 
-    ptTableau[0] = "R:3-23-0;J:10-5-78;V:36-12-6";
-    ptTableau[1] = "R:3-27-0;J:10-8-78;V:42-12-6";
-    ptTableau[2] = "R:3-27-1;J:11-5-78;V:36-0-6";
+    ptTableau[0] = "R:3-23-0;J:10-5-78;V:36-12-6;B:0-0-0";
+    ptTableau[1] = "R:3-27-0;J:10-8-78;V:42-12-6;B:0-0-0";
+    ptTableau[2] = "R:3-27-1;J:11-5-78;V:36-0-6;B:0-0-0";
 
 
     /*   num = read(msgSock, buffer, TAILLE);
@@ -55,48 +51,49 @@ int main(int argc, char **argv) {
        buffer[num] = '\0';*/
 
 
-    joueur ptAffichage[nbJoueurs];
-    /*
-        if (strcmp(buffer, "Que la partie commence !\n") == 0) {
-            printf("%s\n", buffer);
-            for (index = 0; index < 3; index++) {
-                recupDonnees(ptTableau[index], ptAffichage, nbJoueurs, nbChevaux);
-            }
 
+    sprintf(buffer, "%s", "Que la partie commence !\n");
+    if (strcmp(buffer, "Que la partie commence !\n") == 0) {
+        printf("%s\n", buffer);
+        for (index = 0; index < 3; index++) {
+            recupDonnees(ptTableau[index], TabJoueurs, nbChevaux);
             affichePlateau(5, 24);
+        }
 
-            // Pour l'exemple, si on a besoin de parcourir la liste des équipes ?
-            Team t;
-            printf("Plateau de Jeu :\n");
-            // N'affiche rien car 'R' > 'B'
-            for (t = ROUGE; t <= BLEUE; t++) {
-                printf("\t%s\n", toString(t));
+
+        // Pour l'exemple, si on a besoin de parcourir la liste des équipes ?
+        Team t;
+        printf("Plateau de Jeu :\n");
+        // N'affiche rien car 'R' > 'B'
+        for (t = ROUGE; t <= BLEUE; t++) {
+            printf("\t%s\n", toString(t));
+        }
+        for (index = 0; index < NB_JOUEURS; index++) {
+            printf("%s :\n", toString(TabJoueurs[index].couleur));
+            for (indice = 0; indice < nbChevaux; indice++) {
+                printf("%d\n", TabJoueurs[index].ptChevaux[indice].position);
             }
         }
-     */ printf("a\n");
-    recupDonnees(ptTableau[0], ptAffichage, nbJoueurs, nbChevaux);
-
-    for (index = 0; index < 3; index++) {
-        printf("%d\n", ptAffichage[0].ptChevaux[index].position);
     }
+
+    //recupDonnees(ptTableau[0], ptAffichage, nbJoueurs, nbChevaux);
+
+
 
     return 0;
 }
 
-void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbJoueurs, int nbChevaux) {
-    char* resJoueurs[nbJoueurs]; // nombre de joueurs
+void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbChevaux) {
+    char* resJoueurs[NB_JOUEURS]; // nombre de joueurs
     char* resJoueur; // couleur ET coordonnees chevaux
     char* token;
     char var[100];
     strcpy(var, tabDonnees);
     //char* resChevaux[nbChevaux]; // nombre de chevaux
     int index, indice;
-    printf("b\n");
-    for (index = 0; index < nbJoueurs; index++) {
+    for (index = 0; index < NB_JOUEURS; index++) {
         if (index == 0) {
-            printf("b1\n");
             token = strtok(var, ";");
-            printf("b2\n");
             int l = strlen(token);
             resJoueurs[index] = malloc(sizeof (char)*l);
             strcpy(resJoueurs[index], token);
@@ -104,34 +101,33 @@ void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbJoueurs, int nbChe
             resJoueurs[index] = strtok(NULL, ";");
         }
     }
-    printf("c\n");
-    for (index = 0; index < nbJoueurs; index++) {
+    for (index = 0; index < NB_JOUEURS; index++) {
         char* ptCouleur;
         ptCouleur = strtok(resJoueurs[index], ":");
         switch (ptCouleur[0]) {
             case 'R':
-                sprintf(tabReponse[index].couleur, "%s", "Rouge");
+                tabReponse[index].couleur = ROUGE;
                 break;
             case 'J':
-                sprintf(tabReponse[index].couleur, "%s", "Jaune");
+                tabReponse[index].couleur = JAUNE;
                 break;
             case 'V':
-                sprintf(tabReponse[index].couleur, "%s", "Vert");
+                tabReponse[index].couleur = VERTE;
                 break;
             case 'B':
-                sprintf(tabReponse[index].couleur, "%s", "Bleu");
+                tabReponse[index].couleur = BLEUE;
                 break;
         }
-        printf("d\n");
         token = strtok(NULL, ":");
         int l = strlen(token);
         resJoueur = malloc(sizeof (char)*l);
         strcpy(resJoueur, token);
-        
-        tabReponse[index].ptChevaux = malloc(nbChevaux*sizeof(cheval));
-        
+
+        tabReponse[index].nbChevaux = nbChevaux;
+        tabReponse[index].ptChevaux = malloc(nbChevaux * sizeof (cheval));
+
         for (indice = 0; indice < nbChevaux; indice++) {
-            
+
             if (indice == 0) {
                 char* ptPosi;
                 token = strtok(resJoueur, "-");
@@ -139,7 +135,7 @@ void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbJoueurs, int nbChe
                 ptPosi = malloc(sizeof (char)*l);
                 strcpy(ptPosi, token);
                 tabReponse[index].ptChevaux[indice].position = atoi(ptPosi);
-                
+
             } else {
                 char* ptPosi;
                 token = strtok(NULL, "-");
@@ -151,7 +147,6 @@ void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbJoueurs, int nbChe
         }
 
     }
-    printf("e\n");
 
 
 

@@ -3,6 +3,8 @@
  * Auteur(s) : 
  */
 
+#include <stdbool.h>
+
 #ifndef GESTION_JEU_H
 #define GESTION_JEU_H
 
@@ -12,8 +14,31 @@
 #define PUBLIC
 #endif
 
+#define NB_JOUEURS 4
+
+
 // Constantes pour la gestion des équipes
 typedef enum {ROUGE = 'R', JAUNE = 'J', VERTE = 'V', BLEUE = 'B'} Team;
+
+typedef struct {
+    bool estArrive, estDansEnclos, estDansEscalier, estDansParcours;
+    int position;
+} cheval;
+
+typedef struct {
+    Team couleur;
+    cheval* ptChevaux;
+    int nbChevaux;
+} joueur;
+
+typedef struct {
+    int pipeIn[2], pipeOut[2];
+    int numSock;
+    joueur ptJoueur;
+} structComCliServ;
+
+
+PUBLIC joueur TabJoueurs[NB_JOUEURS];
 
 // Retourne une chaîne correspondant à une équipe
 PUBLIC char* toString(Team t);

@@ -13,8 +13,8 @@ clean:
 client: Client.o Reseau.o Plateau.o GestionJeu.o
 	$(LD) -o client Client.o Reseau.o Plateau.o GestionJeu.o
 	
-serveur: Serveur.o Reseau.h Serveur.h 
-	$(LD) -o serveur Serveur.o Reseau.o
+serveur: Serveur.o Reseau.h Serveur.h GestionJeu.o
+	$(LD) -o serveur Serveur.o Reseau.o GestionJeu.o
 
 testPlateau: testPlateau.o Plateau.o GestionJeu.o
 	$(LD) -o testPlateau testPlateau.o Plateau.o GestionJeu.o
@@ -31,7 +31,7 @@ Client.o: Client.c Reseau.h
 Reseau.o: Reseau.c Reseau.h
 	$(CC) Reseau.c
 
-Serveur.o: Serveur.c Serveur.h 
+Serveur.o: Serveur.c Serveur.h GestionJeu.h
 	$(CC) Serveur.c 
 	
 	

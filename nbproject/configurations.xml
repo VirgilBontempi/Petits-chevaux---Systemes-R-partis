@@ -8,7 +8,6 @@
       <in>Plateau.c</in>
       <in>Reseau.c</in>
       <in>Serveur.c</in>
-      <in>Structure.h</in>
       <in>testPlateau.c</in>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -45,7 +44,9 @@
       </makefileType>
       <item path="Client.c" ex="false" tool="0" flavor2="3">
       </item>
-      <item path="ClientFermeTest.c" ex="false" tool="0" flavor2="0">
+      <item path="ClientFermeTest.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="GestionJeu.c" ex="false" tool="0" flavor2="3">
       </item>
@@ -54,8 +55,8 @@
       <item path="Reseau.c" ex="false" tool="0" flavor2="3">
       </item>
       <item path="Serveur.c" ex="false" tool="0" flavor2="3">
-      </item>
-      <item path="Structure.h" ex="false" tool="3" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="testPlateau.c" ex="false" tool="0" flavor2="3">
       </item>

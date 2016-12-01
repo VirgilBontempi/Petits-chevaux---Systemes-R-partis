@@ -12,7 +12,6 @@
       <in>Reseau.h</in>
       <in>Serveur.c</in>
       <in>Serveur.h</in>
-      <in>Structure.h</in>
       <in>testPlateau.c</in>
     </df>
   </logicalFolder>

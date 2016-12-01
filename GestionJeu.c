@@ -10,13 +10,18 @@
 #include "GestionJeu.h"
 
 // Retourne une chaîne correspondant à une équipe
+
 char* toString(Team t) {
     char* res;
     switch (t) {
-        case ROUGE: res = "Rouge"; break;
-        case JAUNE: res = "Jaune"; break;
-        case VERTE: res = "Verte"; break;
-        case BLEUE: res = "Bleue"; break;
+        case ROUGE: res = "Rouge";
+            break;
+        case JAUNE: res = "Jaune";
+            break;
+        case VERTE: res = "Verte";
+            break;
+        case BLEUE: res = "Bleue";
+            break;
     }
     return res;
 }
@@ -28,11 +33,16 @@ char* toString(Team t) {
 //      71..76 = escalier de l'équipe en bas à droite (magenta)
 //      81..86 = escalier de l'équipe en bas à gauche (vert)
 //      91..96 = escalier de l'équipe en haut à gauche (bleu)
+
 char whichChar(int pos) {
-    // Pour faire un essai d'affichage de case non vide :
-    if (pos == 44) return ROUGE;
-    if (pos == 64) return ROUGE;
-    if (pos == 83) return VERTE;
+    //ptTableau[0]
+    int index;
+    for (index = 0; index < NB_JOUEURS; index++) {
+        int indice;
+        for (indice = 0; indice < TabJoueurs[index].nbChevaux; indice++) {
+            if (pos == TabJoueurs[index].ptChevaux[indice].position) return TabJoueurs[index].couleur;
+        }
+    }
 
     if (pos <= 56) {
         if ((pos % 14) == 1)
@@ -44,8 +54,22 @@ char whichChar(int pos) {
 }
 
 // Nombre de chevaux restants à l'écurie pour une équipe donnée
+
 int nbHorsesHome(Team t) {
-    return 3;
+    int nbChevauxEnclos;
+    nbChevauxEnclos = 0;
+
+    int index;
+    for (index = 0; index < NB_JOUEURS; index++) {
+        if (TabJoueurs[index].couleur == t) {
+            int indice;
+            for (indice = 0; indice < TabJoueurs[index].nbChevaux; indice++) {
+                if (TabJoueurs[index].ptChevaux[indice].position == 0) {
+                    nbChevauxEnclos++;
+                }
+            }
+        }
+    }
+
+    return nbChevauxEnclos;
 }
-
-
