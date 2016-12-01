@@ -45,8 +45,6 @@
       <item path="Client.c" ex="false" tool="0" flavor2="3">
       </item>
       <item path="ClientFermeTest.c" ex="false" tool="0" flavor2="3">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="GestionJeu.c" ex="false" tool="0" flavor2="3">
       </item>
@@ -55,8 +53,6 @@
       <item path="Reseau.c" ex="false" tool="0" flavor2="3">
       </item>
       <item path="Serveur.c" ex="false" tool="0" flavor2="3">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="testPlateau.c" ex="false" tool="0" flavor2="3">
       </item>

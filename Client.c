@@ -51,28 +51,27 @@ int main(int argc, char **argv) {
     } else {
         int num;
 
+        // Connexion etablie, vous etes le joueur ...
         num = read(msgSock, buffer, TAILLE);
         buffer[num] = '\0';
         printf("%s\n", buffer);
 
-        //Réception du nombre de chevaux
+        // Réception du nombre de chevaux
         num = read(msgSock, buffer, TAILLE);
+        printf("%s\n", buffer);
         nbChevaux = atoi(buffer);
 
         // On attend "Que la partie commence" (le feu vert)
         num = read(msgSock, buffer, TAILLE);
+        printf("RECEPTION 3 %s\n", buffer);
 
-        while (strcmp(buffer, "Que la partie commence !\n") != 0) {
+        // Lancement de la partie
+        if (strcmp(buffer, "Que la partie commence !\n") == 0) {
+            // On a reçu le feu vert
             num = read(msgSock, buffer, TAILLE);
+            // Affichage du plateau à l'état d'origine
+            afficherTour(buffer, nbChevaux);
         }
-        // On a reçu le feu vert
-        printf("%s\n", buffer);
-        
-        // Reception du plateau à l'état d'origine
-        num = read(msgSock, buffer, TAILLE);
-        // Affichage du plateau à l'état d'origine
-        afficherTour(buffer, nbChevaux);
-
     }
     return 0;
 }
@@ -83,7 +82,7 @@ int main(int argc, char **argv) {
 void afficherTour(char* buffer, int nbChevaux) {
     // Variables
     int index, indice;
-    
+
     // Actualise les données suit à un tour de jeu
     recupDonnees(buffer, TabJoueurs, nbChevaux);
     // Affiche le plateau
@@ -158,7 +157,7 @@ void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbChevaux) {
         token = strtok(NULL, ":");
         int l = strlen(token);
         fflush(stdout);
-        resJoueur = malloc(sizeof(char)*l);
+        resJoueur = malloc(sizeof (char)*l);
 
         strcpy(resJoueur, token);
         // Affectation des données d'un joueur (nombre de chevaux)

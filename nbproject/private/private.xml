@@ -11,10 +11,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/Serveur.h</file>
-            <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/testPlateau.c</file>
+            <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/Makefile</file>
+            <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/Client.h</file>
             <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/GestionJeu.c</file>
+            <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/ClientFermeTest.c</file>
             <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/Client.c</file>
-            <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/Plateau.c</file>
             <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/GestionJeu.h</file>
             <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/Serveur.c</file>
             <file>file:/ext/matheyt/projet/Petits-chevaux---Systemes-Repartis/Plateau.h</file>
