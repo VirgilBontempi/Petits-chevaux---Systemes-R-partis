@@ -37,9 +37,9 @@ int main(int argc, char **argv) {
     ptTableau[1] = malloc(100 * sizeof (char));
     ptTableau[2] = malloc(100 * sizeof (char));
 
-    ptTableau[0] = "R:3-23-0;J:10-5-78;V:36-12-6;B:0-0-0";
-    ptTableau[1] = "R:3-27-0;J:10-8-78;V:42-12-6;B:0-0-0";
-    ptTableau[2] = "R:3-27-1;J:11-5-78;V:36-0-6;B:0-0-0";
+    ptTableau[0] = "R:3-23-0;J:10-5-72;V:36-12-6;B:0-0-0";
+    ptTableau[1] = "R:3-27-0;J:10-8-72;V:42-12-6;B:0-0-0";
+    ptTableau[2] = "R:3-27-1;J:11-5-72;V:36-0-6;B:0-0-0";
 
 
     /*   num = read(msgSock, buffer, TAILLE);

@@ -25,7 +25,7 @@ GestionJeu.o: GestionJeu.c GestionJeu.h
 Plateau.o: Plateau.c Plateau.h GestionJeu.h
 	$(CC) Plateau.c
 
-Client.o: Client.c Reseau.h
+Client.o: Client.c Reseau.h Client.h
 	$(CC) Client.c
 
 Reseau.o: Reseau.c Reseau.h
