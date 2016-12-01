@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <strings.h>
 #include <stdbool.h>
 #include "Reseau.h"
 #include "GestionJeu.h"
@@ -35,10 +36,10 @@ int main(int argc, char **argv) {
 
 
     // Saisie controlée nb joueurs de la partie
-    /*  if (nbJoueursPartie > 4 || nbJoueursPartie < 2) {
-          printf("Une partie doit contenir entre 2 et 4 joueurs.\n");
-          exit(0);
-      }*/
+  /*  if (nbJoueursPartie > 4 || nbJoueursPartie < 2) {
+        printf("Une partie doit contenir entre 2 et 4 joueurs.\n");
+        exit(0);
+    }*/
     // Saisie controlée nb chevaux de la partie
     if (nbChevaux > 4 || nbChevaux < 2) {
         printf("Un joueur ne peut posséder que 2 à 4 chevaux dans son écurie.\n");
@@ -70,7 +71,8 @@ int main(int argc, char **argv) {
         pid_t id;
         char buffer[TAILLE_MAX];
         //fermeture des pipe 
-        //fermePipe(tableauJoueurs, ind);
+        fermePipe(tableauJoueurs, ind);
+
         id = fork();
         if (id == 0) // Fils
         {
@@ -89,11 +91,11 @@ int main(int argc, char **argv) {
             // Ecriture du message de lancement de partie
             sprintf(buffer, "Que la partie commence !\n");
             write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));
-
+/*
             // Construction de la chaîne d'initialisation de la partie
             // Et envoie du nombre de chevaux
             construitChaineEtatJeu(tableauJoueurs, nbChevaux, 4, buffer);
-            write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));
+            write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));*/
         }
     }
     return 0;
@@ -239,7 +241,6 @@ void InitJoueur(structComCliServ* tableau, int nbJoueurs, int nbChevaux) {
 void ComProcess(structComCliServ* tab, int indice) {
     // Variables
     char msgRequestServ[TAILLE_MAX];
-    char msgRequestCli[TAILLE_MAX];
 
     //    char msgReply[TAILLE_MAX];
     int taille;
@@ -250,21 +251,20 @@ void ComProcess(structComCliServ* tab, int indice) {
 
     // Lecture dans le tube
     taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    sprintf(msgRequestCli, "%s", msgRequestServ);
     // Ecriture dans la socket (nbChevaux)
-    write(tab[indice].numSock, msgRequestCli, taille);
-
-    // Lecture dans le tube
-    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    sprintf(msgRequestCli, "%s", msgRequestServ);
-    // Ecriture dans la socket (Que la partie commence !)
-    write(tab[indice].numSock, msgRequestCli, taille);
+    write(tab[indice].numSock, msgRequestServ, taille);
+    printf("a : %s\n", msgRequestServ);
+    bzero(msgRequestServ, TAILLE_MAX);
     
     // Lecture dans le tube
     taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    sprintf(msgRequestCli, "%s", msgRequestServ);
+    // Ecriture dans la socket (Que la partie commence !)
+    write(tab[indice].numSock, msgRequestServ, taille);
+    /*
+    // Lecture dans le tube
+    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
     // Ecriture dans la socket (Plateau à l'état d'origine)
-    write(tab[indice].numSock, msgRequestCli, taille);
+    write(tab[indice].numSock, msgRequestServ, taille);*/
 
 
 

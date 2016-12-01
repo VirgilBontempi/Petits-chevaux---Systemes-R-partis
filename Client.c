@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include "Reseau.h"
@@ -58,19 +59,21 @@ int main(int argc, char **argv) {
 
         // Réception du nombre de chevaux
         num = read(msgSock, buffer, TAILLE);
-        printf("%s\n", buffer);
         nbChevaux = atoi(buffer);
+        printf("%s\n", buffer);
+
 
         // On attend "Que la partie commence" (le feu vert)
         num = read(msgSock, buffer, TAILLE);
-        printf("RECEPTION 3 %s\n", buffer);
+        printf("%s\n", buffer);
 
         // Lancement de la partie
         if (strcmp(buffer, "Que la partie commence !\n") == 0) {
+            printf(" si :%s\n", buffer);
             // On a reçu le feu vert
-            num = read(msgSock, buffer, TAILLE);
+           /* num = read(msgSock, buffer, TAILLE);
             // Affichage du plateau à l'état d'origine
-            afficherTour(buffer, nbChevaux);
+            afficherTour(buffer, nbChevaux);*/
         }
     }
     return 0;
