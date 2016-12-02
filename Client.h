@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#define TAILLE 100
+#define TAILLE 200
 
 void afficherTour(char* buffer, int nbChevaux);
 void recupDonnees(char* tabDonnees, joueur* tabReponse, int nbChevaux);

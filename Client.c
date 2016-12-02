@@ -56,25 +56,24 @@ int main(int argc, char **argv) {
         num = read(msgSock, buffer, TAILLE);
         buffer[num] = '\0';
         printf("%s\n", buffer);
-        write(msgSock,"ACK\0",4);
+        write(msgSock, "ACK\0", 4);
 
         // Réception du nombre de chevaux
+        memset(buffer, '\0', TAILLE);
         num = read(msgSock, buffer, TAILLE);
         nbChevaux = atoi(buffer);
-        printf("%s\n", buffer);
-
 
         // On attend "Que la partie commence" (le feu vert)
+        memset(buffer, '\0', TAILLE);
         num = read(msgSock, buffer, TAILLE);
         printf("%s\n", buffer);
 
         // Lancement de la partie
         if (strcmp(buffer, "Que la partie commence !\n") == 0) {
-            printf(" si :%s\n", buffer);
             // On a reçu le feu vert
-           /* num = read(msgSock, buffer, TAILLE);
+            num = read(msgSock, buffer, TAILLE);
             // Affichage du plateau à l'état d'origine
-            afficherTour(buffer, nbChevaux);*/
+            afficherTour(buffer, nbChevaux);
         }
     }
     return 0;
@@ -103,7 +102,7 @@ void afficherTour(char* buffer, int nbChevaux) {
     for (index = 0; index < NB_JOUEURS; index++) {
         printf("%s :\n", toString(TabJoueurs[index].couleur));
         for (indice = 0; indice < nbChevaux; indice++) {
-            printf("%d\n", TabJoueurs[index].ptChevaux[indice].position);
+            printf("Cheval %d : %d\n", indice, TabJoueurs[index].ptChevaux[indice].position);
         }
     }
 }
