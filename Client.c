@@ -43,10 +43,10 @@ int main(int argc, char **argv) {
 
     int nbChevaux;
 
-    port = atoi(argv[1]);
+    port = atoi(argv[2]);
 
     // Connexion au serveur
-    msgSock = socketClient("localhost", port, TCP);
+    msgSock = socketClient(argv[1], port, TCP);
 
     if (msgSock == -1) { // Gestion d'erreur
         printf("Aie Aie Aie, des petits lutins ont volé la connexion !\n");
