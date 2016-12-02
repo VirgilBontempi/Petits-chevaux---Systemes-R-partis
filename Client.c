@@ -56,6 +56,7 @@ int main(int argc, char **argv) {
         num = read(msgSock, buffer, TAILLE);
         buffer[num] = '\0';
         printf("%s\n", buffer);
+        write(msgSock,"ACK\0",4);
 
         // Réception du nombre de chevaux
         num = read(msgSock, buffer, TAILLE);

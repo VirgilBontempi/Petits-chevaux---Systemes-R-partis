@@ -36,10 +36,10 @@ int main(int argc, char **argv) {
 
 
     // Saisie controlée nb joueurs de la partie
-  /*  if (nbJoueursPartie > 4 || nbJoueursPartie < 2) {
-        printf("Une partie doit contenir entre 2 et 4 joueurs.\n");
-        exit(0);
-    }*/
+    /*  if (nbJoueursPartie > 4 || nbJoueursPartie < 2) {
+          printf("Une partie doit contenir entre 2 et 4 joueurs.\n");
+          exit(0);
+      }*/
     // Saisie controlée nb chevaux de la partie
     if (nbChevaux > 4 || nbChevaux < 2) {
         printf("Un joueur ne peut posséder que 2 à 4 chevaux dans son écurie.\n");
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
         pid_t id;
         char buffer[TAILLE_MAX];
         //fermeture des pipe 
-        fermePipe(tableauJoueurs, ind);
+        
 
         id = fork();
         if (id == 0) // Fils
@@ -80,6 +80,8 @@ int main(int argc, char **argv) {
             exit(0);
 
         } else { // Père
+            int taille;
+            fermePipe(tableauJoueurs, ind);
             // Fermeture des parties des tubes que l'on utilise pas
             close(tableauJoueurs[ind].pipeIn[0]);
             close(tableauJoueurs[ind].pipeOut[1]);
@@ -87,15 +89,21 @@ int main(int argc, char **argv) {
             // Envoie du nombre de chevaux
             sprintf(buffer, "%d", nbChevaux);
             write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));
+            taille = read(tableauJoueurs[ind].pipeOut[0], buffer, TAILLE_MAX);
+            printf("%s\n", buffer);
 
             // Ecriture du message de lancement de partie
             sprintf(buffer, "Que la partie commence !\n");
             write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));
-/*
+            taille = read(tableauJoueurs[ind].pipeOut[0], buffer, TAILLE_MAX);
+            printf("%s\n", buffer);
+
             // Construction de la chaîne d'initialisation de la partie
             // Et envoie du nombre de chevaux
             construitChaineEtatJeu(tableauJoueurs, nbChevaux, 4, buffer);
-            write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));*/
+            write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));
+            taille = read(tableauJoueurs[ind].pipeOut[0], buffer, TAILLE_MAX);
+            printf("%s\n", buffer);
         }
     }
     return 0;
@@ -147,6 +155,8 @@ void communicationProcessInit(int numSocket, int index, int nbJoueursPartie, boo
     //attribueCouleur(index, tab);
     sprintf(msg, "Connexion établie.\nVous êtes le joueur: %s\n\nEn attente de %d joueurs...", toString(tab[index].ptJoueur.couleur), comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
     write(msgSock, msg, strlen(msg));
+    read(msgSock,msg,TAILLE_MAX);
+    printf("%s",msg);
 
     // Message d'information: places restantes
     printf("Le joueur %s s'est connecté, il reste %d place(s).\n", toString(tab[index].ptJoueur.couleur), comptePlacesRestantes(tableauJoueurs, nbJoueursPartie));
@@ -241,39 +251,48 @@ void InitJoueur(structComCliServ* tableau, int nbJoueurs, int nbChevaux) {
 void ComProcess(structComCliServ* tab, int indice) {
     // Variables
     char msgRequestServ[TAILLE_MAX];
+    char msgReply[TAILLE_MAX];
 
-    //    char msgReply[TAILLE_MAX];
-    int taille;
+    int taille, index;
 
     // Fermeture des parties des tubes que l'on utilise pas
+    fermePipe(tab, indice);
     close(tab[indice].pipeIn[1]);
     close(tab[indice].pipeOut[0]);
+    for (index = 0; index < 3; index++) {
+        
+        
+        // Lecture dans le tube
+        taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
+        // Ecriture dans la socket (nbChevaux)
+       // write(tab[indice].numSock, msgRequestServ, taille);
+        printf("a : %s\n", msgRequestServ);
+        sprintf(msgReply, "ACK");
+        write(tab[indice].pipeOut[1], msgReply, strlen(msgReply));
 
-    // Lecture dans le tube
-    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    // Ecriture dans la socket (nbChevaux)
-    write(tab[indice].numSock, msgRequestServ, taille);
-    printf("a : %s\n", msgRequestServ);
-    bzero(msgRequestServ, TAILLE_MAX);
-    
-    // Lecture dans le tube
-    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    // Ecriture dans la socket (Que la partie commence !)
-    write(tab[indice].numSock, msgRequestServ, taille);
-    /*
-    // Lecture dans le tube
-    taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    // Ecriture dans la socket (Plateau à l'état d'origine)
-    write(tab[indice].numSock, msgRequestServ, taille);*/
+        // Lecture dans le tube
+        taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
+        // Ecriture dans la socket (Que la partie commence !)
+        //write(tab[indice].numSock, msgRequestServ, taille);
+        sprintf(msgReply, "ACK");
+        write(tab[indice].pipeOut[1], msgReply, strlen(msgReply));
+
+        // Lecture dans le tube
+        taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
+        // Ecriture dans la socket (Plateau à l'état d'origine)
+        //write(tab[indice].numSock, msgRequestServ, taille);
+        sprintf(msgReply, "ACK");
+        write(tab[indice].pipeOut[1], msgReply, strlen(msgReply));
 
 
 
 
-    // Lecture dans la socket (le client parle)
-    /*taille = read(tab[indice].numSock, msgReply, TAILLE_MAX);
-    msgReply[taille] = '\0';
-    // Ecriture dans le tube (réponse)
-    write(tab[indice].pipeOut[1], msgReply, taille + 1);*/
+        // Lecture dans la socket (le client parle)
+        /*taille = read(tab[indice].numSock, msgReply, TAILLE_MAX);
+        msgReply[taille] = '\0';
+        // Ecriture dans le tube (réponse)
+        write(tab[indice].pipeOut[1], msgReply, taille + 1);*/
+    }
 }
 
 void fermePipe(structComCliServ* joueurs, int ind) {
