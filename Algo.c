@@ -118,20 +118,22 @@ int getValeurCaseEscalier(int numCase, Team t){
 	return 0;
 }
 
-/*bool caseVide(int numCase, Team t){
-	char charCase[10];
-	charCase[10] = whichChar(numCase);
-	if ((strcmp(charCase, 'R') == 0) || (strcmp(charCase, 'J') == 0) || (strcmp(charCase, 'V') == 0) || (strcmp(charCase, 'B') == 0)){
-		return false;
-	}
-	return true;
-}*/
-
-void entrerChevalEscalier(joueur j){
+int entrerChevalEscalier(joueur j, int numCase, Team t){
 	int i;
 	for(i=0; i<j.nbChevaux; i++){
 		if(j.ptChevaux[i].position == 56){
-			j.ptChevaux[i].estDansEscalier;
+			switch(t){
+				case 'R' :
+					j.ptChevaux[i].position = 61;
+				case 'J' :
+					j.ptChevaux[i].position = 71;
+				case 'V' :
+					j.ptChevaux[i].position = 81;
+				case 'B' :
+					j.ptChevaux[i].position = 91;
+				default :
+					return 0;
+			}
 		}
 	}
 }
@@ -158,8 +160,17 @@ void avancerChevalEscalier(joueur j, int valeurDe, int numCase, Team t){
 				
 			}
 			if(j.ptChevaux[i].position == 56){
-			entrerChevalEscalier(j);
+			entrerChevalEscalier(j, 1, t);
 			}
 		}
 	}
 }
+
+/*bool caseVide(int numCase, Team t){
+	char charCase[10];
+	charCase[10] = whichChar(numCase);
+	if ((strcmp(charCase, 'R') == 0) || (strcmp(charCase, 'J') == 0) || (strcmp(charCase, 'V') == 0) || (strcmp(charCase, 'B') == 0)){
+		return false;
+	}
+	return true;
+}*/
