@@ -10,6 +10,7 @@
 #include "Reseau.h"
 #include "GestionJeu.h"
 #include "Serveur.h"
+#include "D.h"
 
 int main(int argc, char **argv) {
     // Initialisation des variables
@@ -106,6 +107,37 @@ int main(int argc, char **argv) {
 
         }
     }
+    
+    
+    
+    //En cour de construction
+    
+  /*  char buffer[TAILLE_MAX];
+    int taille, numDe;
+    while (true/*Partie non terminer*//*) {
+    /*    for (ind = 0; ind < nbJoueursPartie; ind++) {
+
+            sprintf(buffer, "A ton tour !\n");
+            write(tableauJoueurs[ind].pipeIn[1], buffer, strlen(buffer));
+            //attend le retour du jet de dé
+            taille = read(tableauJoueurs[ind].pipeOut[0], buffer, TAILLE_MAX);
+            numDe = atoi(buffer);
+            afficheResDe(numDe);
+            
+            
+
+            // calcul proposition
+            //envoi des proposition
+            //reception du choix
+            //application du choix
+            //renvoi du plateau
+
+            //regarde si victoire
+            //si oui breack
+            //sinon continu de tourner
+
+        }
+    }*/
     return 0;
 }
 
@@ -249,9 +281,9 @@ void InitJoueur(structComCliServ* tableau, int nbJoueurs, int nbChevaux) {
 void ComProcess(structComCliServ* tab, int indice) {
     // Variables
     char msgRequestServ[TAILLE_MAX];
+    char msgReply[TAILLE_MAX];
     int taille;
 
-    printf(" indice :%d\n", indice);
 
     // Fermeture des parties des tubes que l'on utilise pas
     // fermePipe(tab, indice);
@@ -261,14 +293,12 @@ void ComProcess(structComCliServ* tab, int indice) {
     // Lecture dans le tube
     taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
     // Ecriture dans la socket (nbChevaux)
-    printf("msg : %s\n", msgRequestServ);
     write(tab[indice].numSock, msgRequestServ, taille);
 
     sleep(1);
 
     // Lecture dans le tube
     taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    printf("msg : %s\n", msgRequestServ);
     // Ecriture dans la socket (Que la partie commence !)
     write(tab[indice].numSock, msgRequestServ, taille);
 
@@ -276,19 +306,30 @@ void ComProcess(structComCliServ* tab, int indice) {
 
     // Lecture dans le tube
     taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
-    printf("msg : %s\n", msgRequestServ);
     // Ecriture dans la socket (Plateau à l'état d'origine)
     write(tab[indice].numSock, msgRequestServ, taille);
 
+    
+    //En cour de construction
+    
+   /* while (true/*Partie non fini*//*) {                                       
+        taille = read(tab[indice].pipeIn[0], msgRequestServ, TAILLE_MAX);
+        // Ecriture dans la socket (Plateau à l'état d'origine)
+        write(tab[indice].numSock, msgRequestServ, taille);
+        // Lecture dans la socket (le client parle)
+        taille = read(tab[indice].numSock, msgReply, TAILLE_MAX);
+        msgReply[taille] = '\0';
+        // Ecriture dans le tube (réponse)
+        write(tab[indice].pipeOut[1], msgReply, taille + 1);
+    }*/
 
 
 
 
-    // Lecture dans la socket (le client parle)
-    /*taille = read(tab[indice].numSock, msgReply, TAILLE_MAX);
-    msgReply[taille] = '\0';
-    // Ecriture dans le tube (réponse)
-    write(tab[indice].pipeOut[1], msgReply, taille + 1);*/
+
+
+    //fermeture de la socket
+    close(tab[indice].numSock);
 
 }
 
@@ -306,4 +347,3 @@ void fermePipe(structComCliServ* joueurs, int ind) {
         }
     }
 }
-

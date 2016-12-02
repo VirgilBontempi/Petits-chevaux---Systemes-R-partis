@@ -34,6 +34,7 @@
 #include "Plateau.h"
 #include "GestionJeu.h"
 #include "Client.h"
+#include "D.h"
 
 int main(int argc, char **argv) {
     // Variables
@@ -74,8 +75,30 @@ int main(int argc, char **argv) {
             num = read(msgSock, buffer, TAILLE);
             // Affichage du plateau à l'état d'origine
             afficherTour(buffer, nbChevaux);
+            
+            
+            //En cour de construction
+            
+            
+/*            while (strcmp(buffer, "STOP") != 0) {
+                // Lancement de dé
+                num=read(msgSock,buffer,TAILLE);
+                while(strcmp(buffer,"A ton tour !\n")!=0)
+                {
+                    num=read(msgSock,buffer,TAILLE);
+                }*/
+                printf("\nLe dé roule...\n\n");
+                int valeurDe;
+                valeurDe = lancerDe();
+                afficheResDe(valeurDe);
+                /*sprintf(buffer,"%d",valeurDe);
+                write(msgSock,buffer,strlen(buffer));
+            }*/
         }
     }
+
+    //fermeture de la socket
+    close(msgSock);
     return 0;
 }
 

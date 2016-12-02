@@ -5,6 +5,8 @@
       <in>Client.c</in>
       <in>Client.h</in>
       <in>ClientFermeTest.c</in>
+      <in>D.c</in>
+      <in>D.h</in>
       <in>GestionJeu.c</in>
       <in>GestionJeu.h</in>
       <in>Plateau.c</in>

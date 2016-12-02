@@ -4,6 +4,8 @@
     <df root="." name="0">
       <in>Client.c</in>
       <in>ClientFermeTest.c</in>
+      <in>D.c</in>
+      <in>D.h</in>
       <in>GestionJeu.c</in>
       <in>Plateau.c</in>
       <in>Reseau.c</in>
@@ -29,6 +31,9 @@
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-std=c99 -g"/>
+      </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
@@ -42,6 +47,12 @@
       <item path="Client.c" ex="false" tool="0" flavor2="3">
       </item>
       <item path="ClientFermeTest.c" ex="false" tool="0" flavor2="3">
+      </item>
+      <item path="D.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="D.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GestionJeu.c" ex="false" tool="0" flavor2="3">
       </item>
